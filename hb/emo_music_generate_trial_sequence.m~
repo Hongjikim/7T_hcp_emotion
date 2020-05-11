@@ -1,0 +1,120 @@
+function [ts] = emo_music_generate_trial_sequence(basedir, subj_id)
+% 
+% function [ts] = emo_music_generate_trial_sequence
+% 
+% To make trial sequece for emotion task.
+% Each run would have 13 video conditions and 4 music conditions
+% 
+%
+%
+% ..
+%    Copyright (C) 2020  Cocoan lab
+% ..
+%
+%
+%%
+datdir.music = fullfile(basedir, 'music'); 
+datdir.video = fullfile(baseidr, 'movie');
+
+%% emotion category order
+
+rng('shuffle');
+
+% conditions to be obtained
+% 1) Pos vs. Neg --> no same valence for more than 3 times (maximum twice)
+% 2) Music
+
+% video 1-13
+% 1. amusement
+% 2. joy
+% 3. romance
+% 4. sexual desire
+% 5. surprise
+% 6. craving
+% 
+% 7. anxiety
+% 8. horror
+% 9. sadness
+% 10. anger
+% 11. pain
+% 12. disgust
+% 
+% 13. neutral
+% 
+% Music (14-17)
+% 14. joy
+% 15. beautiful
+% 16. fear
+% 17. sadness
+
+
+%% calculate and print out text duration
+
+load('common_ts_12-Sep-2018_14_37.mat');
+common_out = out;
+
+for story_i = 1:10
+    if sum(story_i == find(rand_order<5)) == 1
+        [out{story_i}, cal_duration, my_length, rating_period_loc, rating_period_time] = pico_text_duration(stories{story_i});
+        [~, story_name] = fileparts(stories{story_i});
+        out{story_i}{1}.story_name = story_name;
+        out{story_i}{1}.story_time = cal_duration;
+        out{story_i}{1}.rating_period_loc = rating_period_loc;
+        out{story_i}{1}.rating_period_time = rating_period_time;
+        fprintf('\n*************************\n text file: %s', stories{story_i});
+        out{story_i}{1}.story_title = input('\nStory title?:', 's');
+        fprintf('\n total time: %.2f seconds', cal_duration);
+        fprintf('\n total words: %.f words \n*************************\n', my_length);
+        plot(story_i, cal_duration, 'o')
+        hold on;
+    else
+        out{story_i} = common_out{rand_order(story_i)};
+        plot(story_i, common_out{rand_order(story_i)}{1}.story_time, 'o')
+        hold on;
+    end
+end
+
+xlim([0 11])
+ylim([200 250])
+%ylim([0 2])
+
+plot1 = plot([0 22], [215 215]);
+plot2 = plot([0 11], [220 220]);
+plot3 = plot([0 22], [225 225]);
+plot4 = plot([0 11], [230 230]);
+legend([plot1, plot2, plot3, plot4], '215','220', '225', '230')
+
+for story_i = 1:numel(stories)
+    fprintf('story order %d: %s\n', story_i, out{story_i}{1}.story_name)
+end
+
+
+%% add out into ts
+
+run_i = 1;
+ts{run_i}{1} = out{1};
+ts{run_i}{2} = out{2};
+
+run_i = 2;
+ts{run_i}{1} = out{3};
+ts{run_i}{2} = out{4};
+
+run_i = 3;
+ts{run_i}{1} = out{5};
+ts{run_i}{2} = out{6};
+
+run_i = 4;
+ts{run_i}{1} = out{7};
+ts{run_i}{2} = out{8};
+
+run_i = 5;
+ts{run_i}{1} = out{9};
+ts{run_i}{2} = out{10};
+
+ts{1}{1}{1}.rand_order = rand_order;
+%% save ts
+nowtime = clock;
+savename = fullfile(subject_dir, ['trial_sequence_' date '_' num2str(nowtime(4)) '_' num2str(nowtime(5)) '.mat']);
+save(savename, 'ts');
+
+end
