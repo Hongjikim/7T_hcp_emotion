@@ -62,7 +62,7 @@ while not(check)
         positive = [1, 2, 3, 4, 5, 6, 14, 15];
         negative = [7, 8, 9, 10, 11, 12, 16, 17];
         
-        done = false; % emotion conditions' pre-requisites
+        done = false;
         
         while not(done)
             done = true;
@@ -75,25 +75,18 @@ while not(check)
                 end
             end
         end
-        
         emo_order{run_num} = temp_emo;
         
-    end
-    
-    count = 0;
-    for k = 1:numel(temp_emo)-1
-        for j = 1:numel(temp_emo)-1
-            if emo_order{1}(k:k+1) ==  emo_order{2}(j:j+1)
-                count = count+1;
+        count = 0;
+        for k = 1:numel(emo_order{1})-1
+            for j = 1: numel(emo_order{2})-1
+                if emo_order{1}(k:k+1) ==  emo_order{2}(j:j+1)
+                    count = count+1;
+                end
             end
         end
     end
-    if count > ceil(numel(emo_order{2})/3)
-        check = false;
-    end
-        
 end
-
 %% randomize (2) stimuli order
 
 rng('shuffle');
@@ -117,7 +110,7 @@ end
 %% add outputs into ts
 
 trial_s.subj_id = subj_id;
-trial_s.emo_order = emo_order;
+trial_s.emo_order = temp_emo;
 trial_s.stim_order = stim_order;
 
 %% save ts
