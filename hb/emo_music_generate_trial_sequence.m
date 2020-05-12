@@ -1,4 +1,4 @@
-function [ts] = emo_music_generate_trial_sequence(basedir, subj_id)
+function [trial_s] = emo_music_generate_trial_sequence(basedir, subj_id)
 % 
 % function [ts] = emo_music_generate_trial_sequence
 % 
@@ -21,10 +21,6 @@ ts_dir = fullfile(basedir, 'trial_sequence');
 
 %% randomize (1) emotion category order
 
-rng('shuffle');
-
-% randperm(17)
-
 % conditions to be obtained
 % 1) Pos vs. Neg --> no same valence for more than 3 times (maximum twice)
 % 2) Music --> no more than 3 times in a row
@@ -43,7 +39,7 @@ rng('shuffle');
 % 10. anger
 % 11. pain
 % 12. disgust
-% 
+%
 % 13. neutral
 % 
 % Music (14-17)
@@ -54,6 +50,26 @@ rng('shuffle');
 
 % output: emo_order
 
+rng('shuffle');
+
+music = [14, 15, 16, 17];
+positive = [1, 2, 3, 4, 5, 6, 14, 15];
+negative = [7, 8, 9, 10, 11, 12, 16, 17];
+
+done = false;
+
+while not(done)
+    done = true;  
+    emo_order = randperm(17);
+    for i = 3:17
+        if (any(positive == emo_order(i)) && any(positive == emo_order(i-1)) && any(positive == emo_order(i-2)))...
+                || (any(negative == emo_order(i)) && any(negative == emo_order(i-1)) && any(negative == emo_order(i-2)))...
+                || (any(music == emo_order(i)) && any(music == emo_order(i-1)) && any(music == emo_order(i-2)))
+        done = false;
+        end
+    end
+end
+ 
 %% randomize (2) stimuli order
 
 rng('shuffle');
@@ -68,12 +84,11 @@ for i = 1:13
     end
 end
 
-
 %% add outputs into ts
 
-ts.subj_id = subj_id;
-ts.emo_order = emo_order;
-ts.stim_order = stim_order;
+trial_s.subj_id = subj_id;
+trial_s.emo_order = emo_order;
+trial_s.stim_order = stim_order;
 
 %% save ts
 nowtime = clock;
