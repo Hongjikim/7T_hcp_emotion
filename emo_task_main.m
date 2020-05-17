@@ -49,19 +49,26 @@ orange = [255 145 0];
 % Screen('Preference','TextEncodingLocale','ko_KR.UTF-8');
 
 test.scanstart = GetSecs;
+
+run_num = 1;
+
 data.runscan_starttime = GetSecs; % run start timestamp
 Screen(theWindow, 'FillRect', bgcolor, window_rect);
+Screen('Flip', theWindow)
+waitsec_fromstarttime(runscan_starttime, 4) % baseline (blank) = 4 -> 필요한가?
 
-data.loop_start_time{story_num} = GetSecs;
-sTime = data.loop_start_time{story_num};
+data.loop_start_time{run_num} = GetSecs;
+sTime = data.loop_start_time{run_num};
 duration = 0;
-test.loopstart{story_num} = GetSecs;
+test.loopstart{run_num} = GetSecs;
 
-for emotion = trial_sequece.emo_order{1,1}
+for emotion = trial_sequece.emo_order{1,run_num}
     
     % video
     if emotion < 14  
         for stim = trial_sequece.stim_order{1,1}.video(emotion,:)
+            data.dat{story_num}{word_i}.text_start_time = GetSecs;
+            
             Screen('TextSize', theWindow, fontsize(3));
             fixation_point = double('+') ;
             DrawFormattedText(theWindow, fixation_point, 'center', 'center', text_color);
