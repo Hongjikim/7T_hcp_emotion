@@ -1,4 +1,4 @@
-function [trial_s] = emo_music_generate_trial_sequence(basedir, subj_id)
+function [ts] = emo_music_generate_trial_sequence(basedir, subj_id)
 %
 % function [ts] = emo_music_generate_trial_sequence
 %
@@ -116,13 +116,13 @@ end
 
 %% add outputs into ts
 
-trial_s.subj_id = subj_id;
-trial_s.emo_order = emo_order;
-trial_s.stim_order = stim_order;
+ts.subj_id = subj_id;
+ts.emo_order = emo_order;
+ts.stim_order = stim_order;
 
 %% save ts
 nowtime = clock;
 savename = fullfile(ts_dir, ['trial_sequence_' subj_id '_' date '_' num2str(nowtime(4)) '_' num2str(nowtime(5)) '.mat']);
-save(savename, 'trial_s');
+save(savename, 'ts');
 
 end
