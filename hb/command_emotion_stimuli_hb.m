@@ -48,7 +48,36 @@ fnames.pain = {'1752.mp4', '1768.mp4', '0313.mp4', '1991.mp4', '1613.mp4', ...
 fnames.disgust = {'2010.mp4', '1441.mp4', '1685.mp4', '0187.mp4', '0876.mp4', ...
     '0929.mp4', '1044.mp4', '0713.mp4'};
 
-%% 
+fnames.beautiful = {'4w8PCYlzlmg_163.mp3', '2470.m4a.mp3', 'lv1uZj7MzBE_23.mp3', ...
+    'mz66bnRWQJM_139.mp3', 'rCljeHfhhrc_2.mp3', 'HSOtku1j600_23.mp3', '696.m4a.mp3', ...
+    'BiyCkSOF1pc_0.mp3'};
+
+fnames.fear = {'cWjOaZFXo3s_25.mp3', 'DM-Aleatoric_Singing_short.mp3', 'QSYwG-1GAXQ_0.mp3', ...
+    'uVNzb9GPwnY_13.mp3', '6TUeUL7EW9M_1.mp3', 'Eegs84CdzTc_450.mp3', 'uV0D5h17Yzk_110.mp3', ...
+    'yEktSBG6SO8_0.mp3'};
+
+fnames.joyful = {'MK6TXMsvgQg_3.mp3', '6wlbB1PTzJU_0.mp3', 'H7bvnjQMgq4_14.mp3', ...
+    'QPzjHgMENrc_22.mp3','hEWGq6RoKs8_5.mp3', 'NEkXCYrQUAg_80.mp3', ...
+    'bs66ORnV5jU_1.mp3', 'l4t2mWbXgCI_1.mp3'};
+
+fnames.sadness_music = {'pUZeSYsU0Uk_85.mp3', 'pcaqVYEG7Dw_0.mp3', 'xTs83Ej5nS8_180.mp3', ...
+    '7LEmer7wwHI_2285.mp3', 'aWIE0PX1uXk_190.mp3', 'aWIE0PX1uXk_46.mp3', '502.m4a.mp3', ...
+    'xTs83Ej5nS8_226.mp3'};
+
+
+%% Mac version
+command = [];
+
+dest = fullfile(music, '/m17_sadness');
+target = fnames.sadness_music;
+
+for i = 1:numel(target)
+    command = [command 'cp ' source target{i} ' ' dest ' &'];
+end
+
+command
+clipboard('copy', command)
+%% window version
 command = [];
 
 dest = fullfile(movie, '/v01_amusement');
@@ -63,10 +92,10 @@ clipboard('copy', command)
 
 %% copy/paste target stimuli file
 
-stim = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/emotion_stimuli/movie';
-music = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/music/candidates_music';
-movie = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/movie/candidates_video';
-source = fullfile(stim, 'mp4_noname/');
+stim = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/emotion_stimuli/music';
+music = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/music/candidates_music_ver03';
+movie = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/movie/candidates_video_ver03';
+source = fullfile(stim, 'Verified_Normed/');
 
 fnames.anxiety = {'0604.mp4', '1313.mp4', '0615.mp4', '1629.mp4', '0385.mp4', ...
     '1701.mp4', '0377.mp4', '0046.mp4', '0489.mp4', '0395.mp4'};

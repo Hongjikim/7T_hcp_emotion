@@ -8,11 +8,11 @@ function target_dir = set_stim_dir(stim_dir, emotion_num, stim_num)
 %     'disgust', 'neutral', 'm-joy', 'beautiful', 'fear', 'm-sadness'};
 
 if emotion_num < 14 % movie
-    dir.movie = filenames(fullfile(stim_dir, 'movie', 'candidates_video', ['*', num2str(emotion_num, '%.2d'), '*sorted*']));
+    dir.movie = filenames(fullfile(stim_dir, 'exp_stimuli', 'video_stimuli', ['*', num2str(emotion_num, '%.2d'), '*']));
     files = filenames(fullfile(dir.movie{1}, '*mp4'));
     target_dir = files{stim_num};
 else % music
-    dir.music = filenames(fullfile(stim_dir, 'music', 'candidates_music', ['*', num2str(emotion_num, '%.2d'), '*']));
+    dir.music = filenames(fullfile(stim_dir, 'exp_stimuli', 'music_stimuli', ['*', num2str(emotion_num, '%.2d'), '*']));
     files = filenames(fullfile(dir.music{1}, '*mp3'));
     target_dir = files{stim_num};
 end

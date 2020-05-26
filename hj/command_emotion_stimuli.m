@@ -1,9 +1,9 @@
 %% copy/paste target stimuli file
 
-stim = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/emotion_stimuli/movie';
-music = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/music/candidates_music';
+stim = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/emotion_stimuli/music';
+music = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/music/candidates_music_ver03';
 movie = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/movie/candidates_video';
-source = fullfile(stim, 'mp4_noname/');
+source = fullfile(stim, 'Verified_Normed/');
 
 fnames.anxiety = {'0604.mp4', '1313.mp4', '0615.mp4', '1629.mp4', '0385.mp4', ...
     '1701.mp4', '0377.mp4', '0046.mp4', '0489.mp4', '0395.mp4'};

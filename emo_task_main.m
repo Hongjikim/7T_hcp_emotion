@@ -10,30 +10,23 @@ emo_cat =  {'amusement', 'v-joy', 'romance', 'sexual desire', 'surprise', ...
     'craving', 'anxiety', 'horror', 'v-sadness', 'anger', 'pain', ...
     'disgust', 'neutral', 'm-joy', 'beautiful', 'fear', 'm-sadness'};
 
-ts_fname = filenames(fullfile(ts_dir, 'trial_sequence*.mat'));
-if numel(ts_fname)>1
-    error('There are more than one ts file. Please check and delete the wrong files.')
-else
-    load(ts_fname{1}); %Q?? ts_fname
+% make/load trial_sequence
+while true
+    ts_fname = filenames(fullfile(ts_dir, ['trial_sequence*' subj_id '*.mat']), 'char');
+    if size(ts_fname,1) == 1
+        if contains(ts_fname, 'no matches found') % no ts file
+            emo_music_generate_trial_sequence(basedir, subj_id); % make ts
+        else
+            load(ts_fname); break;
+        end
+    elseif size(ts_fname,1)>1
+        error('There are more than one ts file. Please check and delete the wrong files.')
+    end
 end
 
-% make/load trial sequence for each subjects
-emo_music_generate_trial_sequence(basedir, subj_id);
-% before run, load pre-made trial sequence
+run_num = input('Run number? (e.g., 1): ');
 
-sid = input('Subject ID? (e.g., pico001): ', 's');
-subject_dir = filenames(fullfile(datdir, [sid '*']), 'char');
-[~, sid] = fileparts(subject_dir);
-
-ts_fname = filenames(fullfile(subject_dir, 'trial_sequence*.mat'));
-if numel(ts_fname)>1
-    error('There are more than one ts file. Please check and delete the wrong files.')
-else
-    load(ts_fname{1}); %Q?? ts_fname
-end
-
-run_n = input('Run number? (e.g., 1): ');
-%% setting
+%% Setting
 
 ptb_drawformattedtext_disableClipping = 1;
 bgcolor = 50;
@@ -55,8 +48,6 @@ red = [190 0 0];
 blue = [0 85 169];
 orange = [255 145 0];
 
-
-
 %% run
 
 Screen('Preference', 'SkipSyncTests', 1);
@@ -68,8 +59,6 @@ Screen('Preference', 'SkipSyncTests', 1);
 % during dummy scan, display instruction ("please focus...")
 
 runscan_starttime = GetSecs;
-
-run_num = 1; % input
 
 data.runscan_starttime = GetSecs; % run start timestamp
 Screen(theWindow, 'FillRect', bgcolor, window_rect);
@@ -147,6 +136,7 @@ for block = 1:numel(ts.emo_order{1,run_num}) % block: per emotion category
         waitsec_fromstarttime(data.dat{block}{trial}.fix_start_time, fix_duration(trial));
         
         data.dat{block}{trial}.fix_end_time = GetSecs;
+        data.dat{block}{trial}.fix_duration = fix_duration(trial);
         data.dat{block}{trial}.trial_end_time = GetSecs;
     end
     
@@ -189,80 +179,3 @@ save(savename, 'data');
 
 WaitSecs(5);
 Screen('CloseAll');
-%% Test one
-
-Screen('Preference', 'SkipSyncTests', 1);
-% Screen('Preference','TextEncodingLocale','ko_KR.UTF-8');
-[theWindow, ~] = Screen('OpenWindow', window_num, bgcolor, window_rect);%[0 0 2560/2 1440/2]
-
-a = GetSecs;
-
-Screen('TextSize', theWindow, fontsize(3));
-fixation_point = double('+') ;
-DrawFormattedText(theWindow, fixation_point, 'center', 'center', text_color);
-Screen('Flip', theWindow);
-
-waitsec_fromstarttime(a, 2);
-
-% moviefile =  '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/music/candidates_music/m14_joyful/6wlbB1PTzJU_0.mp3';
-moviefile =  '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/movie/candidates_video/v02_joy/0035.mp4';
-playmode = 1;
-
-% [moviePtr, dura, ] = Screen('OpenMovie', theWindow, moviefile);
-[moviePtr, dura, fps, width, height]=Screen('OpenMovie', theWindow, moviefile);
-scale_movie_w = width*(width/W);
-scale_movie_h = height*(height/H)*(1);
-
-new_rect = [W/2-scale_movie_w*(4.5/10) H*(0.5/10)-scale_movie_h*(1/10) ...
-    W/2+scale_movie_w*(4.5/10) H*(1/10)+scale_movie_h*(8/10)];
-
-
-% moviePtr = Screen('CreateMovie', theWindow, moviefile, 5, 5);
-
-Screen('SetMovieTimeIndex', moviePtr,0);
-Screen('PlayMovie', moviePtr, playmode); %Screen('PlayMovie?')% 0 == Stop playback, 1 == Normal speed forward, -1 == Normal speed backward,
-t = GetSecs;
-
-while GetSecs-t < dura %(~done) %~KbCheck
-    % Wait for next movie frame, retrieve texture handle to it
-    tex = Screen('GetMovieImage', theWindow, moviePtr);
-    
-    if tex<=0
-        % We're done, break out of loop:
-        %done = 1;
-        waitsec_fromstarttime(t,5);
-        break;
-    end
-    %     Screen('DrawTexture', theWindow, tex, window_rect, window_rect);
-    Screen('DrawTexture', theWindow, tex, [ ], new_rect);
-    
-    %         Screen('DrawTexture', theWindow, tex);
-    
-    Screen('Flip', theWindow)
-    Screen('Close', tex);
-    % Valid texture returned? A negative value means end of movie reached:
-    
-    
-    % Update display:
-    
-end
-
-Screen('TextSize', theWindow, fontsize(3));
-fixation_point = double('+') ;
-DrawFormattedText(theWindow, fixation_point, 'center', 'center', text_color);
-Screen('Flip', theWindow);
-
-%% stim display - testmode
-
-if emotion_num < 14 % video
-    msg = sprintf(['test video category: ', emo_cat{emotion_num}, ...
-        '\n stim num: ', num2str(stim_num)]);
-else % music
-    msg = sprintf(['test music category: ', emo_cat{emotion_num}, ...
-        '\n stim num: ', num2str(stim_num)]);
-end
-
-Screen('TextSize', theWindow, fontsize(3));
-DrawFormattedText(theWindow, msg, 'center', 'center', text_color);
-Screen('Flip', theWindow);
-waitsec_fromstarttime(data.dat{block}{trial}.stim_start_time, 5); % consider stim loading time
