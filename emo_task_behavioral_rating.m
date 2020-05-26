@@ -41,8 +41,8 @@ emo_cat =  {'amusement', 'v-joy', 'romance', 'sexual desire', 'surprise', ...
 
 stim_dir = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates';
 dat_dir = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/git_7T_hcp_emotion/data';
-% video -> ((stim(5sec) + fixation(5sec))*4 + filler(5sec) + fixation) * 13
-% music -> ((stim(5sec) + fixation(5sec))*3 + filler(5sec) + fixation) * 4
+% video -> ((stim(5sec) + fixation(5sec))*4 + filler(5sec) + fixation(5sec)) * 13
+% music -> ((stim(5sec) + fixation(5sec))*3 + filler(5sec) + fixation(5sec)) * 4
 
 %% run
 

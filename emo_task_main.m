@@ -3,11 +3,14 @@
 % setting: directory and subject information
 
 % basedir = '/Users/hyebinkim/Dropbox/Cocoan lab/7T HCP/stimuli_candidates/git_7T_hcp_emotion';
-basedir = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/git_7T_hcp_emotion';
+basedir = 'C:\Users\nutri\Dropbox\Cocoan lab\7T HCP\stimuli_candidates\git_7T_hcp_emotion';
+
+% basedir = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/git_7T_hcp_emotion';
+
 subj_id = input('Subject ID? (e.g., sub001): ', 's');
 
 % make trial sequence for each subjects
-emo_music_generate_ts(basedir, subj_id);
+emo_music_generate_trial_sequence(basedir, subj_id);
 
 %% setting
 
@@ -39,10 +42,14 @@ emo_cat =  {'amusement', 'v-joy', 'romance', 'sexual desire', 'surprise', ...
     'craving', 'anxiety', 'horror', 'v-sadness', 'anger', 'pain', ...
     'disgust', 'neutral', 'm-joy', 'beautiful', 'fear', 'm-sadness'};
 
-stim_dir = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates';
-dat_dir = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/git_7T_hcp_emotion/data';
-% video -> ((stim(5sec) + fixation(5sec))*4 + filler(5sec) + fixation) * 13
-% music -> ((stim(5sec) + fixation(5sec))*3 + filler(5sec) + fixation) * 4
+% stim_dir = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates';
+% dat_dir = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/git_7T_hcp_emotion/data';
+
+stim_dir = 'C:\Users\nutri\Dropbox\Cocoan lab\7T HCP\stimuli_candidates';
+dat_dir = 'C:\Users\nutri\Dropbox\Cocoan lab\7T HCP\stimuli_candidates\git_7T_hcp_emotion\data';
+
+% video -> ((stim(5sec) + fixation(5sec))*4 + filler(5sec) + fixation(5sec)) * 13
+% music -> ((stim(5sec) + fixation(5sec))*3 + filler(5sec) + fixation(5sec)) * 4
 
 %% run
 
@@ -71,7 +78,7 @@ test.loopstart{run_num} = GetSecs;
 data.trial_sequence.emo_order = ts.emo_order{run_num};
 data.trial_sequence.stim_order = ts.stim_order{run_num};
 
-for block = 1:2 % numel(ts.emo_order{1,run_num}) % block: per emotion category
+for block = 2:4 % numel(ts.emo_order{1,run_num}) % block: per emotion category
     
     emotion_num = ts.emo_order{1,run_num}(block);
     if emotion_num < 14 % video
