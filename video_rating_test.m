@@ -79,7 +79,7 @@ waitsec_fromstarttime(taskdata.runscan_starttime, 4);
 %% Display text, Rating
 
 for trial = 1 % repeat for 140 trials (trial: per one video)
-    
+                                                                  
     [emotion_num,stim_num] = ind2sub(size(stim_order),find(stim_order==trial));
     
     msg = sprintf(['test video category: ', video_cat{emotion_num},'\n stim num: ', num2str(stim_num)]);

@@ -2,37 +2,19 @@
 
 % setting: directory and subject information
 
-[basedir, dat_dir, stim_dir, ts_dir] = set_directory('hj_mac'); % '7T_mri'
+set_directory('hj_mac')
 
 subj_id = input('Subject ID? (e.g., sub001): ', 's');
+
+% make/load trial sequence for each subjects
+emo_music_generate_trial_sequence(basedir, subj_id);
+% load existing file
+% before run, load pre-made trial sequence
 
 emo_cat =  {'amusement', 'v-joy', 'romance', 'sexual desire', 'surprise', ...
     'craving', 'anxiety', 'horror', 'v-sadness', 'anger', 'pain', ...
     'disgust', 'neutral', 'm-joy', 'beautiful', 'fear', 'm-sadness'};
 
-ts_fname = filenames(fullfile(ts_dir, 'trial_sequence*.mat'));
-if numel(ts_fname)>1
-    error('There are more than one ts file. Please check and delete the wrong files.')
-else
-    load(ts_fname{1}); %Q?? ts_fname
-end
-
-% make/load trial sequence for each subjects
-emo_music_generate_trial_sequence(basedir, subj_id);
-% before run, load pre-made trial sequence
-
-sid = input('Subject ID? (e.g., pico001): ', 's');
-subject_dir = filenames(fullfile(datdir, [sid '*']), 'char');
-[~, sid] = fileparts(subject_dir);
-
-ts_fname = filenames(fullfile(subject_dir, 'trial_sequence*.mat'));
-if numel(ts_fname)>1
-    error('There are more than one ts file. Please check and delete the wrong files.')
-else
-    load(ts_fname{1}); %Q?? ts_fname
-end
-
-run_n = input('Run number? (e.g., 1): ');
 %% setting
 
 ptb_drawformattedtext_disableClipping = 1;
