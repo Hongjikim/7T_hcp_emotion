@@ -168,6 +168,8 @@ for block = 1:numel(ts.emo_order{1,run_num}) % block: per emotion category
     
 end
 
+data.runscan_end_time = GetSecs;
+
 Screen('TextSize', theWindow, fontsize(3));
 DrawFormattedText(theWindow, double('모든 과제가 끝났습니다. 잠시 대기해주세요.'), 'center', 'center', text_color);
 Screen('Flip', theWindow);

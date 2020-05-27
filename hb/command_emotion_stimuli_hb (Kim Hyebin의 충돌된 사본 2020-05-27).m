@@ -1,12 +1,72 @@
+%% hyebin window computer
+
+%% copy/paste target stimuli file
+
+stim = 'C:\Users\nutri\Dropbox\Cocoan lab\7T HCP\emotion_stimuli\movie';
+music = 'C:\Users\nutri\Dropbox\Cocoan lab\7T HCP\stimuli_candidates\music\candidates_music_ver03';
+movie = 'C:\Users\nutri\Dropbox\Cocoan lab\7T HCP\stimuli_candidates\movie\candidates_video_ver03';
+source = fullfile(stim, 'mp4_noname\');
+
+% emo_cat =  {'amusement', 'v-joy', 'romance', 'sexual desire', 'surprise', ...
+%     'craving', 'anxiety', 'horror', 'v-sadness', 'anger', 'pain', ...
+%     'disgust', 'neutral', 'm-joy', 'beautiful', 'fear', 'm-sadness'};
+
+fnames.amusement = {'0910.mp4', '1801.mp4', '0074.mp4', '0080.mp4', '0578.mp4', ...
+    '0574.mp4', '1697.mp4', '1043.mp4'};
+
+fnames.joy = {'1032.mp4', '0688.mp4', '1034.mp4', '2034.mp4', '1938.mp4', '0380.mp4', ...
+    '1953.mp4', '0593.mp4'};
+
+fnames.romance = {'1424.mp4', '0204.mp4','0116.mp4','1911.mp4', '0369.mp4', ...
+    '2129.mp4', '1468.mp4', '1056.mp4'};
+
+fnames.sexual_desire = {'0922.mp4', '0878.mp4', '1917.mp4', '1248.mp4', '1307.mp4', ...
+    '1008.mp4', '1610.mp4', '0556.mp4', '1385.mp4', '1247.mp4', '1377.mp4', '1894.mp4', ...
+    '2063.mp4', '2074.mp4'};
+
+fnames.surprise =  {'0509.mp4', '0976.mp4', '1277.mp4', '1433.mp4', '1436.mp4', '0468.mp4', ...
+    '0602.mp4', '1002.mp4'}; % 1899, 1276, 1002, 0602, 0468 (0.58333)
+
+fnames.craving = {'0458.mp4', '0830.mp4', '0883.mp4', '0896.mp4', '1740.mp4', ...
+    '0898.mp4', '1968.mp4', '0780.mp4'}; % 0780, 1449 (0.90909)
+
+fnames.anxiety = {'0604.mp4', '1313.mp4', '0615.mp4', '1629.mp4', '0385.mp4', ...
+    '1701.mp4', '0377.mp4', '0046.mp4'};
+
+fnames.horror = {'0606.mp4', '1705.mp4', '0234.mp4', '1922.mp4', '1830.mp4', '0699.mp4', '1650.mp4', ...
+    '1868.mp4'};
+
+fnames.sadness = {'1959.mp4', '0756.mp4', '1259.mp4', '0975.mp4', '1786.mp4', ...
+    '0051.mp4', '0059.mp4', '0067.mp4'};
+
+fnames.anger = {'1310.mp4', '0218.mp4', '1703.mp4', '1339.mp4', '0681.mp4', ...
+    '1478.mp4', '0733.mp4', '0414.mp4'};
+
+fnames.pain = {'1752.mp4', '1768.mp4', '0313.mp4', '1991.mp4', '1613.mp4', ...
+    '1403.mp4', '0736.mp4', '0154.mp4'};
+
+fnames.disgust = {'2010.mp4', '1441.mp4', '1685.mp4', '0187.mp4', '0876.mp4', ...
+    '0929.mp4', '1044.mp4', '0713.mp4'};
+
+%% 
+command = [];
+
+dest = fullfile(movie, '/v01_amusement');
+target = fnames.amusement;
+
+for i = 1:numel(target)
+    command = [command 'copy ' source target{i} ' ' dest ' &'];
+end
+
+command
+clipboard('copy', command)
+
 %% copy/paste target stimuli file
 
 stim = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/emotion_stimuli/movie';
-music = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/exp_stimuli/video_stimuli';
+music = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/music/candidates_music';
 movie = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/movie/candidates_video';
 source = fullfile(stim, 'mp4_noname/');
-
-fnames.pain_again = {'2080.mp4', '1181.mp4', '1768.mp4', '1596.mp4', ...
-    '1185.mp4', '0089.mp4', '1792.mp4', '2109.mp4'};
 
 fnames.anxiety = {'0604.mp4', '1313.mp4', '0615.mp4', '1629.mp4', '0385.mp4', ...
     '1701.mp4', '0377.mp4', '0046.mp4', '0489.mp4', '0395.mp4'};
@@ -106,7 +166,7 @@ fnames.disgust30 = {'2010.mp4', '1441.mp4', '1685.mp4', '0187.mp4', '0876.mp4', 
 %%
 command = [];
 
-dest = fullfile(music, '/v12_disgust');
+dest = fullfile(movie, '/v12_disgust');
 target = fnames.disgust30;
 
 for i = 1:numel(target)
