@@ -30,7 +30,7 @@ end
 
 run_num = input('Run number? (e.g., 1): ');
 
-listen = str2double(input('Listen for scanner 1=yes, 2=no     >> ','s'));
+listen = 1; % str2double(input('Listen for scanner 1=yes, 2=no     >> ','s'));
 
 %% Setting
 
@@ -126,37 +126,6 @@ elseif listen == 2
         end
     end
 end
-% while (1)
-%     [~,~,keyCode] = KbCheck;
-%
-%     if keyCode(KbName('s'))==1
-%         break
-% %     elseif keyCode(KbName('q'))==1
-% %         abort_experiment('manual');
-%     end
-%
-%     
-%
-% end
-% KbName('UnifyKeyNames');
-% syncNum = KbName('s');
-% L = KbName('1!');
-% R = KbName('2@');
-% % fliprate = Screen(w, 'GetFlipInterval');
-% keys = [L R]; init.keys = keys;
-% % Receive a scanpulse %
-% done = 0;
-% scanPulse=0;
-% while scanPulse~=1
-%     [keyIsDown, ~, keyCode] = KbCheck;
-%     if keyIsDown
-%         if keyCode(syncNum)
-%             scanPulse = 1;
-%             data.s_key_receive_time = GetSecs;
-%             break;
-%         end
-%     end
-% end
 
 Screen('TextSize', theWindow, fontsize(3));
 fixation_point = double('+') ;
@@ -274,7 +243,7 @@ Screen('Flip', theWindow);
 
 % save data
 nowtime = clock;
-savename = fullfile(dat_dir, ['task_data_' subj_id '_' date '_' num2str(nowtime(4)) '_' num2str(nowtime(5)) '.mat']);
+savename = fullfile(dat_dir, ['task_data_' subj_id '_run' num2str(run_num) '_' date '_' num2str(nowtime(4)) '_' num2str(nowtime(5)) '.mat']);
 save(savename, 'data');
 
 WaitSecs(5);
