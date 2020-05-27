@@ -2,7 +2,9 @@
 
 % setting: directory and subject information
 
-[basedir, dat_dir, stim_dir, ts_dir] = set_directory('hj_mac'); % '7T_mri'
+% addpath(genpath('/Users/7t_mri/Desktop/CocoanLab_emotion_task')); savepath;
+
+[basedir, dat_dir, stim_dir, ts_dir] = set_directory('7T_mri'); % 'hj_mac'
 
 subj_id = input('Subject ID? (e.g., sub001): ', 's');
 
@@ -21,10 +23,14 @@ while true
         end
     elseif size(ts_fname,1)>1
         error('There are more than one ts file. Please check and delete the wrong files.')
+    elseif size(ts_fname,1) == 0 % 7T MRI Mac
+        emo_music_generate_trial_sequence(basedir, subj_id); % make ts
     end
 end
 
 run_num = input('Run number? (e.g., 1): ');
+
+listen = str2double(input('Listen for scanner 1=yes, 2=no     >> ','s'));
 
 %% Setting
 
@@ -37,7 +43,8 @@ screens = Screen('Screens');
 window_num = screens(end);
 Screen('Preference', 'SkipSyncTests', 1);
 window_info = Screen('Resolution', window_num);
-window_rect = [0 0 2560/2 1440/2]; %[0 0 window_info.width window_info.height]; %for mac, [0 0 2560 1600];
+% window_rect = [0 0 2560/2 1440/2]; %[0 0 window_info.width window_info.height]; %for mac, [0 0 2560 1600];
+window_rect = [0 0 window_info.width window_info.height]; % 7T MRI Mac
 
 W = window_rect(3); %width of screen
 H = window_rect(4); %height of screen
@@ -47,28 +54,119 @@ white = 255;
 red = [190 0 0];
 blue = [0 85 169];
 orange = [255 145 0];
-
 %% run
 
 Screen('Preference', 'SkipSyncTests', 1);
 [theWindow, ~] = Screen('OpenWindow', window_num, bgcolor, window_rect);%[0 0 2560/2 1440/2]
 % Screen('Preference','TextEncodingLocale','ko_KR.UTF-8');
 
-% get s-key to start the run
 % how long is the dummy scan in 7T?
 % during dummy scan, display instruction ("please focus...")
-
-runscan_starttime = GetSecs;
 
 data.runscan_starttime = GetSecs; % run start timestamp
 Screen(theWindow, 'FillRect', bgcolor, window_rect);
 Screen('Flip', theWindow)
-waitsec_fromstarttime(runscan_starttime, 4) % baseline (blank) = 4 -> should be longer
+
+% s key
+
+% Listen for scanner
+if isnan(listen)
+    listen = 2;
+end
+% [keyboardIndex, deviceName, allInfo] = GetKeyboardIndices;
+% ===== Experimenter
+device(1).product = 'Magic Keyboard with Numeric Keypad';
+device(1).vendorID= 76;
+% % ===== Participant
+device(2).product = '932';
+device(2).vendorID= [1240 6171];
+% ===== Scanner
+device(3).product = 'KeyWarrior8 Flex';
+device(3).vendorID= 1984;
+
+if listen == 1
+    Experimenter = IDKeyboards(device(1));
+    %Participant = IDKeyboards(device(2));
+    Scanner = IDKeyboards(device(3));
+else
+    Experimenter =[]; Scanner = []; Participant =[];
+end
+
+% keyboard
+KbName('UnifyKeyNames');
+syncNum = KbName('s');
+Abort = KbName('q');
+Space = KbName('space');
+
+done = 0;
+scanPulse=0;
+
+% during dummy scan, show instruction
+    Screen('TextSize', theWindow, fontsize(3));
+    instruction_msg = double('Please focus on the video/music clips. (s)');
+    DrawFormattedText(theWindow, instruction_msg, 'center', 'center', text_color);
+    Screen('Flip', theWindow);
+
+if listen == 1
+    while scanPulse~=1 %wait for a pulse
+        [keyIsDown, ~, keyCode] = KbCheck(Scanner);
+        if keyIsDown
+            if keyCode(syncNum)
+                scanPulse = 1;
+                data.s_key_receive_time = GetSecs; 
+                break;
+            end
+        end
+    end
+elseif listen == 2
+    while(~done)
+        [keyIsDown, secs, keyCode, deltaSecs] = KbCheck;
+        if keyCode(syncNum)
+            done = 1;
+        end
+    end
+end
+% while (1)
+%     [~,~,keyCode] = KbCheck;
+%
+%     if keyCode(KbName('s'))==1
+%         break
+% %     elseif keyCode(KbName('q'))==1
+% %         abort_experiment('manual');
+%     end
+%
+%     
+%
+% end
+% KbName('UnifyKeyNames');
+% syncNum = KbName('s');
+% L = KbName('1!');
+% R = KbName('2@');
+% % fliprate = Screen(w, 'GetFlipInterval');
+% keys = [L R]; init.keys = keys;
+% % Receive a scanpulse %
+% done = 0;
+% scanPulse=0;
+% while scanPulse~=1
+%     [keyIsDown, ~, keyCode] = KbCheck;
+%     if keyIsDown
+%         if keyCode(syncNum)
+%             scanPulse = 1;
+%             data.s_key_receive_time = GetSecs;
+%             break;
+%         end
+%     end
+% end
+
+Screen('TextSize', theWindow, fontsize(3));
+fixation_point = double('+') ;
+DrawFormattedText(theWindow, fixation_point, 'center', 'center', text_color);
+Screen('Flip', theWindow);
+
+% baseline (12 seconds)
+waitsec_fromstarttime(data.s_key_receive_time, 12); % baseline (blank)
 
 data.loop_start_time{run_num} = GetSecs;
-sTime = data.loop_start_time{run_num};
-duration = 0;
-test.loopstart{run_num} = GetSecs;
 
 data.trial_sequence.emo_order = ts.emo_order{run_num};
 data.trial_sequence.stim_order = ts.stim_order{run_num};
@@ -146,7 +244,7 @@ for block = 1:numel(ts.emo_order{1,run_num}) % block: per emotion category
     data.dat{block}{trial}.task = 'filler task';
     data.dat{block}{trial}.filler_start_time = GetSecs;
     
-    msg = sprintf('filler task (simple math)');
+    msg = sprintf('simple math task');
     Screen('TextSize', theWindow, fontsize(3));
     DrawFormattedText(theWindow, msg, 'center', 'center', white, [], [], [], 1.5);
     Screen('Flip', theWindow);
@@ -171,7 +269,7 @@ end
 data.runscan_end_time = GetSecs;
 
 Screen('TextSize', theWindow, fontsize(3));
-DrawFormattedText(theWindow, double('모든 과제가 끝났습니다. 잠시 대기해주세요.'), 'center', 'center', text_color);
+DrawFormattedText(theWindow, double('This run is done. Please wait.'), 'center', 'center', text_color);
 Screen('Flip', theWindow);
 
 % save data

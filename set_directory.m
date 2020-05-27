@@ -27,8 +27,8 @@ switch where
         stim_dir = 'C:\Users\nutri\Dropbox\Cocoan lab\7T HCP\stimuli_candidates';
         
     case '7T_mri'
-%         basedir = 'C:\Users\nutri\Dropbox\Cocoan lab\7T HCP\stimuli_candidates\git_7T_hcp_emotion';
-%         stim_dir = 'C:\Users\nutri\Dropbox\Cocoan lab\7T HCP\stimuli_candidates';
+        basedir = '/Users/7t_mri/Desktop/CocoanLab_emotion_task/7T_hcp_emotion';
+        stim_dir = '/Users/7t_mri/Desktop/CocoanLab_emotion_task';
 end
 
 dat_dir = fullfile(basedir, 'data');
