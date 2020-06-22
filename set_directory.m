@@ -15,8 +15,8 @@ function [basedir, dat_dir, stim_dir, ts_dir] = set_directory(where)
 %%
 switch where
     case 'hj_mac'
-        basedir = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates/git_7T_hcp_emotion';
-        stim_dir = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/stimuli_candidates';
+        basedir = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/sync_7T_emotion/git_7T_hcp_emotion';
+        stim_dir = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/sync_7T_emotion';
         
     case 'hb_mac'
         basedir = '/Users/hyebinkim/Dropbox/Cocoan lab/7T HCP/stimuli_candidates/git_7T_hcp_emotion';

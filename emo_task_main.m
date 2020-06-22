@@ -4,7 +4,8 @@
 
 % addpath(genpath('/Users/7t_mri/Desktop/CocoanLab_emotion_task')); savepath;
 
-[basedir, dat_dir, stim_dir, ts_dir] = set_directory('7T_mri'); % 'hj_mac'
+[basedir, dat_dir, stim_dir, ts_dir] = set_directory('hj_mac'); 
+% [basedir, dat_dir, stim_dir, ts_dir] = set_directory('7T_mri'); % 'hj_mac'
 
 subj_id = input('Subject ID? (e.g., sub001): ', 's');
 
@@ -66,6 +67,8 @@ Screen('Preference', 'SkipSyncTests', 1);
 data.runscan_starttime = GetSecs; % run start timestamp
 Screen(theWindow, 'FillRect', bgcolor, window_rect);
 Screen('Flip', theWindow)
+
+HideCursor;
 
 % s key
 
