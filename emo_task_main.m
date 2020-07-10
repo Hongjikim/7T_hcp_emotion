@@ -1,17 +1,33 @@
 %% main script for emotion task in fMRI
 
-% setting: directory and subject information
+% Run emotion task in CNIR_7T_HCP project
+%
+% :::Inputs:::
+% 1) subject number
+% 2) subject name initial 
+% 3) run number (1 or 2) 
+% 4) listen (1 = sync to MRI, 2 = no sync, default is 1)
+%
+% :::Outputs:::
+%
+%   **rest:**
+%        data file
+%
+% ..
+%    Copyright (C) 2020 COCOAN lab
+%    contact: Hongji Kim (redkim94@hanmail.net)
+%
 
-% addpath(genpath('/Users/7t_mri/Desktop/CocoanLab_emotion_task')); savepath;
 
-[basedir, dat_dir, stim_dir, ts_dir] = set_directory('hj_mac'); 
-% [basedir, dat_dir, stim_dir, ts_dir] = set_directory('7T_mri'); % 'hj_mac'
+%% setting: directory and subject information
+
+[basedir, dat_dir, stim_dir, ts_dir] = set_directory('7T_mri'); % 'hj_mac'
 
 subj_id = input('Subject ID? (e.g., sub001): ', 's');
 
-emo_cat =  {'amusement', 'v-joy', 'romance', 'sexual desire', 'surprise', ...
-    'craving', 'anxiety', 'horror', 'v-sadness', 'anger', 'pain', ...
-    'disgust', 'neutral', 'm-joy', 'beautiful', 'fear', 'm-sadness'};
+run_num = input('Run number? (e.g., 1): ');
+
+listen = 1; % str2double(input('Listen for scanner 1=yes, 2=no     >> ','s'));
 
 % make/load trial_sequence
 while true
@@ -29,11 +45,12 @@ while true
     end
 end
 
-run_num = input('Run number? (e.g., 1): ');
-
-listen = 1; % str2double(input('Listen for scanner 1=yes, 2=no     >> ','s'));
 
 %% Setting
+
+emo_cat =  {'amusement', 'v-joy', 'romance', 'sexual desire', 'surprise', ...
+    'craving', 'anxiety', 'horror', 'v-sadness', 'anger', 'pain', ...
+    'disgust', 'neutral', 'm-joy', 'beautiful', 'fear', 'm-sadness'};
 
 ptb_drawformattedtext_disableClipping = 1;
 bgcolor = 50;
@@ -68,15 +85,10 @@ data.runscan_starttime = GetSecs; % run start timestamp
 Screen(theWindow, 'FillRect', bgcolor, window_rect);
 Screen('Flip', theWindow)
 
+%% receive s-key from scanner
+
 HideCursor;
 
-% s key
-
-% Listen for scanner
-if isnan(listen)
-    listen = 2;
-end
-% [keyboardIndex, deviceName, allInfo] = GetKeyboardIndices;
 % ===== Experimenter
 device(1).product = 'Magic Keyboard with Numeric Keypad';
 device(1).vendorID= 76;
@@ -104,6 +116,7 @@ Space = KbName('space');
 done = 0;
 scanPulse=0;
 
+%%
 % during dummy scan, show instruction
     Screen('TextSize', theWindow, fontsize(3));
     instruction_msg = double('Please focus on the video/music clips. (s)');
@@ -113,6 +126,8 @@ scanPulse=0;
 if listen == 1
     while scanPulse~=1 %wait for a pulse
         [keyIsDown, ~, keyCode] = KbCheck(Scanner);
+%                 [keyIsDown, ~, keyCode] = KbCheck(Experimenter);
+
         if keyIsDown
             if keyCode(syncNum)
                 scanPulse = 1;
@@ -135,8 +150,9 @@ fixation_point = double('+') ;
 DrawFormattedText(theWindow, fixation_point, 'center', 'center', text_color);
 Screen('Flip', theWindow);
 
-% baseline (12 seconds)
-waitsec_fromstarttime(data.s_key_receive_time, 12); % baseline (blank)
+%%
+% baseline (16 seconds)
+waitsec_fromstarttime(data.s_key_receive_time, 16); % baseline (blank)
 
 data.loop_start_time{run_num} = GetSecs;
 

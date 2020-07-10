@@ -29,6 +29,7 @@ switch where
     case '7T_mri'
         basedir = '/Users/7t_mri/Desktop/CocoanLab_emotion_task/7T_hcp_emotion';
         stim_dir = '/Users/7t_mri/Desktop/CocoanLab_emotion_task';
+        
 end
 
 dat_dir = fullfile(basedir, 'data');
