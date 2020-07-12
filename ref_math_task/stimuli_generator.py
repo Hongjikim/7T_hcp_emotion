@@ -7,7 +7,8 @@ Created on Thu Mar 26 10:07:52 2020
 """
 import numpy as np
 import sys
-sys.path.append('/home/hun/Downloads/experiments/series/')
+
+sys.path.append('/Users/byeolkim/Dropbox/stimuli_candidates/git_7T_hcp_emotion/ref_math_task/')
 from stim_func import flatten_listINlist, series_finder, calc_number3
 # Series Completion
 period = [1,2] # stimuli periodicity
@@ -16,7 +17,7 @@ TF = [(answer[0],'False'),(answer[1],'True')]
 operator = ['+','-']
 step = 9
 
-Ntrials = 12
+Ntrials = 100
 condvec = [np.ones(int(np.floor(Ntrials/len(period))))*period[j] for j in range(len(period))]
 condvec = flatten_listINlist(condvec,[])
 ansvec = np.ones(Ntrials) - answer*(int(Ntrials/len(answer)))
@@ -57,7 +58,7 @@ stim_dict['hard_ansc'] = [hard_calc[ansc_idx2[i]][1] for i in range(len(ansc_idx
 #iidx = list_shuffler([x for x in range(1,Ntrials,2)])
 
 import pandas as pd
-odir = '/home/hun/Downloads/experiments/'
+odir = '/Users/byeolkim/Dropbox/stimuli_candidates/git_7T_hcp_emotion/ref_math_task/'
 fname = 'Maths_stimuli_prac.csv'
 stimuli = pd.DataFrame(stim_dict)
 stimuli.to_csv(odir+fname)
