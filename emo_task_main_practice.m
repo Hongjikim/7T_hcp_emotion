@@ -15,7 +15,7 @@
 %
 % ..
 %    Copyright (C) 2020 COCOAN lab
-%    contact: Hongji Kim (redkim94@hanmail.net)
+%    contact: Hongji Kim (redkim94@hanmail.net) & Byeol Kim
 %
 %
 
@@ -25,7 +25,7 @@
 [basedir, dat_dir, stim_dir, ts_dir] = set_directory('byeolmac'); % 'hj_mac'
 
 start_input.subj_id = ['sub', input('Subject number? (e.g., 1001): ', 's')];
-start_input.subj_initial = input('Subject initial? (e.g., ABC): ', 's');
+% start_input.subj_initial = input('Subject initial? (e.g., ABC): ', 's');
 start_input.run_num = input('Run number? (e.g., 1 or 2): ');
 start_input.listen = 3; % str2double(input('Listen for scanner 1=yes, 2=no     >> ','s'));
 
@@ -56,8 +56,7 @@ emo_cat =  {'amusement', 'v-joy', 'romance', 'sexual desire', 'surprise', ...
 
 % screen set up
 screens = Screen('Screens');
-window_num = screens(end);
-% window_num = max(Screen('Screens'));
+window_num = max(screens);
 Screen('Preference', 'SkipSyncTests', 1);
 window_info = Screen('Resolution', window_num);
 % window_rect = [0 0 window_info.width window_info.height]; % 7T MRI Mac
@@ -116,7 +115,7 @@ mathset.trl_time = mathset.present_time + mathset.task_time + mathset.feedback_t
 %% device set up
 
 Screen('Preference', 'SkipSyncTests', 1);
-[theWindow, ~] = Screen('OpenWindow', window_num, bgcolor, window_rect);
+[theWindow, ~] = Screen('OpenWindow', window_num, bgcolor);
 % Screen('Preference','TextEncodingLocale','ko_KR.UTF-8');
 
 % how long is the dummy scan in 7T?
@@ -130,13 +129,13 @@ HideCursor;
 
 % ===== Experimenter
 device(1).product = 'Magic Keyboard with Numeric Keypad';
-device(1).vendorID= 76;
+device(1).vendorID = 76;
 % % ===== Participant
 device(2).product = '932';
-device(2).vendorID= 6171;
+device(2).vendorID = 6171;
 % ===== Scanner
 device(3).product = 'KeyWarrior8 Flex';
-device(3).vendorID= 1984;
+device(3).vendorID = 1984;
 
 if start_input.listen == 1
     Experimenter = IDKeyboards(device(1));
@@ -363,8 +362,7 @@ for block = 1%:n_block % block: per emotion category
     fixation_point = double('+') ;
     DrawFormattedText(theWindow, fixation_point, 'center', 'center', text_color);
     Screen('Flip', theWindow);
-    waitsec_fromstarttime(data.dat{block}{trial}.filler_end_time, 5);
-    
+    waitsec_fromstarttime(data.dat{block}{trial}.filler_start_time, 10);
     data.dat{block}{trial}.block_end_time = GetSecs;
 end
 
@@ -381,3 +379,21 @@ save(savename, 'data');
 
 WaitSecs(1);
 Screen('CloseAll');
+
+
+function deviceIndex = IDKeyboards (kbStruct)
+devices	= PsychHID('Devices');
+kbs		= find([devices(:).usageValue]==6); % value of keyboard
+
+deviceIndex = [];
+for mm=1:length(kbs)
+    if strcmp(devices(kbs(mm)).product,kbStruct.product) && ...
+            ismember(devices(kbs(mm)).vendorID, kbStruct.vendorID)
+        deviceIndex = kbs(mm);
+    end
+end
+
+if isempty(deviceIndex)
+    error('No %s detected on the system',kbStruct.product);
+end
+end

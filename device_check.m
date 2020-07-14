@@ -1,5 +1,21 @@
 function output = device_check(whichcomp, mri)
-
+% input device checking in PTB for an experiment at CNIR
+% 
+%  ::: example :::
+%   output = device_check(1, 0);
+%
+%  ::: inputs :::
+%    ** whichcomp ** 
+%           1 = connected with external input devices for an experiment
+%           2 = no external input
+%
+%    ** mri ** 
+%           0 = disconnected with the mri, no trigger
+%           1 = connected with the mri, for checking trigger input
+% 
+% 
+% Copyright Byeol Kim, 2020
+%
 screens = Screen('Screens');
 window_num = screens(end);
 Screen('Preference', 'SkipSyncTests', 1);
@@ -57,7 +73,7 @@ Screen('Flip', theWindow);
 
 ch = [];
 while 1
-    [keyisdown,~,keycode,~] = KbCheck;
+    [keyisdown,~,keycode,~] = KbCheck(Participant);
     if keyisdown
         if keycode(X)
             break

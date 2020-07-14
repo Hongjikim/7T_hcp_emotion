@@ -15,7 +15,7 @@
 %
 % ..
 %    Copyright (C) 2020 COCOAN lab
-%    contact: Hongji Kim (redkim94@hanmail.net) & Byeol Kim
+%    contact: Hongji Kim (redkim94@hanmail.net)
 %
 %
 
@@ -25,7 +25,7 @@
 % [basedir, dat_dir, stim_dir, ts_dir] = set_directory('byeolmac'); % 'hj_mac'
 
 start_input.subj_id = ['sub', input('Subject number? (e.g., 1001): ', 's')];
-% start_input.subj_initial = input('Subject initial? (e.g., ABC): ', 's');
+start_input.subj_initial = input('Subject initial? (e.g., ABC): ', 's');
 start_input.run_num = input('Run number? (e.g., 1 or 2): ');
 start_input.listen = 1; % str2double(input('Listen for scanner 1=yes, 2=no     >> ','s'));
 
@@ -57,6 +57,7 @@ emo_cat =  {'amusement', 'v-joy', 'romance', 'sexual desire', 'surprise', ...
 % screen set up
 screens = Screen('Screens');
 window_num = max(screens);
+% window_num = max(Screen('Screens'));
 Screen('Preference', 'SkipSyncTests', 1);
 window_info = Screen('Resolution', window_num);
 window_rect = [0 0 window_info.width window_info.height]; % 7T MRI Mac
