@@ -21,13 +21,13 @@
 
 %% Directory and subject information
 
-% [basedir, dat_dir, stim_dir, ts_dir] = set_directory('7T_mri'); % 'hj_mac'
-[basedir, dat_dir, stim_dir, ts_dir] = set_directory('byeolmac'); % 'hj_mac'
+[basedir, dat_dir, stim_dir, ts_dir] = set_directory('7T_mri'); % 'hj_mac'
+% [basedir, dat_dir, stim_dir, ts_dir] = set_directory('byeolmac'); % 'hj_mac'
 
 start_input.subj_id = ['sub', input('Subject number? (e.g., 1001): ', 's')];
 start_input.subj_initial = input('Subject initial? (e.g., ABC): ', 's');
 start_input.run_num = input('Run number? (e.g., 1 or 2): ');
-start_input.listen = 3; % str2double(input('Listen for scanner 1=yes, 2=no     >> ','s'));
+start_input.listen = 1; % str2double(input('Listen for scanner 1=yes, 2=no     >> ','s'));
 
 data.input = start_input; 
 
@@ -57,35 +57,33 @@ emo_cat =  {'amusement', 'v-joy', 'romance', 'sexual desire', 'surprise', ...
 % screen set up
 screens = Screen('Screens');
 window_num = screens(end);
+% window_num = max(Screen('Screens'));
 Screen('Preference', 'SkipSyncTests', 1);
 window_info = Screen('Resolution', window_num);
-% window_rect = [0 0 2560/2 1440/2]; %[0 0 window_info.width window_info.height]; %for mac, [0 0 2560 1600];
 window_rect = [0 0 window_info.width window_info.height]; % 7T MRI Mac
-window_rect = [0 0 2560 1440];
 W = window_rect(3); %width of screen
 H = window_rect(4); %height of screen
 
 % check resolution
-% [win, rect] = Screen('OpenScreen')
-% assert(rect==1920&&rect==1200, 'The monitor resolution is not 1920*1200')
+assert(W==1920&&H==1200, 'The monitor resolution is not 1920*1200');
 
 % text location
 textH = H/2.3;
 r = [0 0 0 0];
-stim_loc{1} = CenterRectOnPoint(r, window_rect(3)*0.4, window_rect(4)*0.3);
-stim_loc{2} = CenterRectOnPoint(r, window_rect(3)*0.45, window_rect(4)*0.3);
-stim_loc{3} = CenterRectOnPoint(r, window_rect(3)*0.5, window_rect(4)*0.3);
-stim_loc{4} = CenterRectOnPoint(r, window_rect(3)*0.55, window_rect(4)*0.3);
-stim_loc{5} = CenterRectOnPoint(r, window_rect(3)*0.6, window_rect(4)*0.3);
-ans_loc{1} = CenterRectOnPoint(r, window_rect(3)*0.3, window_rect(4)*0.65);
-ans_loc{2} = CenterRectOnPoint(r, window_rect(3)*0.7, window_rect(4)*0.65);
-stim_mpoint = CenterRectOnPoint(r, window_rect(3)*0.45, window_rect(4)*0.5);
+stim_loc{1} = CenterRectOnPoint(r, W*0.4, H*0.3);
+stim_loc{2} = CenterRectOnPoint(r, W*0.45, H*0.3);
+stim_loc{3} = CenterRectOnPoint(r, W*0.5, H*0.3);
+stim_loc{4} = CenterRectOnPoint(r, W*0.55, H*0.3);
+stim_loc{5} = CenterRectOnPoint(r, W*0.6, H*0.3);
+ans_loc{1} = CenterRectOnPoint(r, W*0.3, H*0.65);
+ans_loc{2} = CenterRectOnPoint(r, W*0.7, H*0.65);
+stim_mpoint = CenterRectOnPoint(r, W*0.45, H*0.5);
 mathset.stim_loc = stim_loc; mathset.ans_loc = ans_loc; mathset.stim_mpoint = stim_mpoint;
 
 % fontsize
 ptb_drawformattedtext_disableClipping = 1;
-fontsize = [28, 32, 41, 54];
-mathset.txtsize1 = 40; mathset.txtsize3 = 60;
+fontsize = [28, 32, 41, 60];
+mathset.txtsize1 = fontsize(4); mathset.txtsize3 = fontsize(4);
 
 % color
 black = 0;
@@ -113,10 +111,11 @@ mathset.task_time = 4;
 mathset.feedback_time = 1;
 mathset.trl_time = mathset.present_time + mathset.task_time + mathset.feedback_time;
 
-%% run
+
+%% device set up
 
 Screen('Preference', 'SkipSyncTests', 1);
-[theWindow, ~] = Screen('OpenWindow', window_num, bgcolor, window_rect);%[0 0 2560/2 1440/2]
+[theWindow, ~] = Screen('OpenWindow', window_num, bgcolor, window_rect);
 % Screen('Preference','TextEncodingLocale','ko_KR.UTF-8');
 
 % how long is the dummy scan in 7T?
@@ -126,8 +125,6 @@ data.runscan_starttime = GetSecs; % run start timestamp
 Screen(theWindow, 'FillRect', bgcolor, window_rect);
 Screen('Flip', theWindow);
 
-%% receive s-key from scanner
-
 HideCursor;
 
 % ===== Experimenter
@@ -135,14 +132,14 @@ device(1).product = 'Magic Keyboard with Numeric Keypad';
 device(1).vendorID= 76;
 % % ===== Participant
 device(2).product = '932';
-device(2).vendorID= [1240 6171];
+device(2).vendorID= 6171;
 % ===== Scanner
 device(3).product = 'KeyWarrior8 Flex';
 device(3).vendorID= 1984;
 
 if start_input.listen == 1
     Experimenter = IDKeyboards(device(1));
-    %Participant = IDKeyboards(device(2));
+    Participant = IDKeyboards(device(2)); 
     Scanner = IDKeyboards(device(3));
 else
     Experimenter =[]; Scanner = []; Participant =[];
@@ -153,8 +150,8 @@ KbName('UnifyKeyNames');
 syncNum = KbName('s');
 Abort = KbName('q');
 Space = KbName('space');
-O = KbName('1!');
-X = KbName('2@');
+% O = KbName('1!');
+% X = KbName('2@');
 O = KbName('z');
 X = KbName('x');
 keys = [O X]; mathset.keys = keys;
@@ -162,18 +159,16 @@ keys = [O X]; mathset.keys = keys;
 done = 0;
 scanPulse=0;
 
-%%
+%% sync with scanner 
 % during dummy scan, show instruction
-    Screen('TextSize', theWindow, fontsize(3));
-    instruction_msg = double('Please focus on the video/music clips. (s)');
-    DrawFormattedText(theWindow, instruction_msg, 'center', 'center', text_color);
-    Screen('Flip', theWindow);
+Screen('TextSize', theWindow, fontsize(3));
+instruction_msg = double('Please focus on the video/music clips. (s)');
+DrawFormattedText(theWindow, instruction_msg, 'center', 'center', text_color);
+Screen('Flip', theWindow);
 
 if start_input.listen == 1
     while scanPulse~=1 %wait for a pulse
         [keyIsDown, ~, keyCode] = KbCheck(Scanner);
-%                 [keyIsDown, ~, keyCode] = KbCheck(Experimenter);
-
         if keyIsDown
             if keyCode(syncNum)
                 scanPulse = 1;
@@ -199,9 +194,7 @@ fixation_point = double('+') ;
 DrawFormattedText(theWindow, fixation_point, 'center', 'center', text_color);
 Screen('Flip', theWindow);
 
-%%
-% baseline (16 seconds)
-% waitsec_fromstarttime(data.s_key_receive_time, 16); % baseline (blank)
+%% TASK START
 waitsec_fromstarttime(data.s_key_receive_time, 3); % baseline (blank)
 
 data.loop_start_time{start_input.run_num} = GetSecs;
@@ -210,7 +203,7 @@ data.trial_sequence.emo_order = ts.emo_order{start_input.run_num};
 data.trial_sequence.stim_order = ts.stim_order{start_input.run_num};
 data.trial_sequence.math_order = math_stim{1:n_block};
 
-for block = 1%:n_block % block: per emotion category
+for block = 1:n_block % block: per emotion category
     
     emotion_num = ts.emo_order{1,start_input.run_num}(block);
     
@@ -225,7 +218,7 @@ for block = 1%:n_block % block: per emotion category
         fix_duration = randi([3 5], 1, numel(temp_stim_order));
     end
     
-    for trial = 1%:numel(temp_stim_order)% trial: per one video/music
+    for trial = 1:numel(temp_stim_order)% trial: per one video/music
         
         stim_num = temp_stim_order(trial); % stimulus number (e.g., joy001)
         
@@ -300,6 +293,7 @@ for block = 1%:n_block % block: per emotion category
     cnum={}; cnum{1}=n1; cnum{2}=s1; cnum{3}=n2; cnum{4}=s2; cnum{5}=n3;
     
     % calculation presentation (0s)
+    Screen('TextSize', theWindow, fontsize(4));
     for n = 1:length(stim_loc)
         stim_time = GetSecs; ii = 1;
         while ii <= n
@@ -322,7 +316,6 @@ for block = 1%:n_block % block: per emotion category
     
     % 'Correct?' (1s)
 %     DrawFormattedText(theWindow, ['Is ' cnum{end} ' correct?'], stim_mpoint(3), stim_mpoint(4), black);
-    Screen('TextSize', theWindow, fontsize(4));
     DrawFormattedText(theWindow, 'O', ans_loc{1}(3), ans_loc{1}(4), white);
     DrawFormattedText(theWindow, 'X', ans_loc{2}(3), ans_loc{2}(4), white);
     Screen(theWindow,'Flip');
@@ -331,8 +324,8 @@ for block = 1%:n_block % block: per emotion category
     rt_start = GetSecs; 
     selection = []; 
     
-    while GetSecs - rt_start < 10 %4.5
-        [keyisdown,~,keycode,~] = KbCheck;
+    while GetSecs - rt_start < 4.5
+        [keyisdown,~,keycode,~] = KbCheck(-3);
         if keyisdown 
             if keycode(O)
                 rt_end = GetSecs;
@@ -385,5 +378,5 @@ nowtime = clock;
 savename = fullfile(dat_dir, ['taskdata_' start_input.subj_id '_run' num2str(start_input.run_num, '%.2d') '_' date '_' num2str(nowtime(4)) '_' num2str(nowtime(5)) '.mat']);
 save(savename, 'data');
 
-WaitSecs(5);
+WaitSecs(3);
 Screen('CloseAll');

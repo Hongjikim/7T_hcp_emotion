@@ -1,13 +1,13 @@
 function feedback_screen(w,response,selection,cnum,init)
 
-Screen('TextSize', w, init.txtsize1);
+% Screen('TextSize', w, init.txtsize1);
 stim_loc = init.stim_loc; 
 ans_loc = init.ans_loc; 
 stim_mpoint = init.stim_mpoint; 
 keys = init.keys;
 correct_color = init.correct_color; 
-wrong_color = init.wrong_color; 
-base_color = [255 255 255];
+wrong_color = [0 0 0]; 
+base_color = [0 0 0];
 
 switch response
     case 1
@@ -16,7 +16,7 @@ switch response
             DrawFormattedText(w, cnum{ii}, stim_loc{ii}(3), stim_loc{ii}(4), correct_color);
             ii = ii+1;
         end
-        DrawFormattedText(w, ['Is ' cnum{end} ' correct?'], stim_mpoint(3), stim_mpoint(4), correct_color);
+%         DrawFormattedText(w, ['Is ' cnum{end} ' correct?'], stim_mpoint(3), stim_mpoint(4), correct_color);
         Screen('TextSize', w, init.txtsize3);
         if selection == keys(1)
             DrawFormattedText(w, 'O', ans_loc{1}(3), ans_loc{1}(4), base_color);
