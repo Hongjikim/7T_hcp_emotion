@@ -201,7 +201,7 @@ data.loop_start_time{start_input.run_num} = GetSecs;
 
 data.trial_sequence.emo_order = ts.emo_order{start_input.run_num};
 data.trial_sequence.stim_order = ts.stim_order{start_input.run_num};
-data.trial_sequence.math_order = math_stim{1:n_block};
+data.trial_sequence.math_order = math_stim(1:n_block);
 
 for block = 1:n_block % block: per emotion category
     
@@ -250,7 +250,7 @@ for block = 1:n_block % block: per emotion category
             end
             
             Screen('DrawTexture', theWindow, tex);
-            Screen('Flip', theWindow)
+            Screen('Flip', theWindow);
             Screen('Close', tex);
         end
         

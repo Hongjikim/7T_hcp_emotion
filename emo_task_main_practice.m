@@ -200,9 +200,9 @@ data.loop_start_time{start_input.run_num} = GetSecs;
 
 data.trial_sequence.emo_order = ts.emo_order{start_input.run_num};
 data.trial_sequence.stim_order = ts.stim_order{start_input.run_num};
-data.trial_sequence.math_order = math_stim{1:n_block};
+data.trial_sequence.math_order = math_stim(1:n_block);
 
-for block = 1%:n_block % block: per emotion category
+for block = 1:3%n_block % block: per emotion category
     
     emotion_num = ts.emo_order{1,start_input.run_num}(block);
     
@@ -217,7 +217,7 @@ for block = 1%:n_block % block: per emotion category
         fix_duration = randi([3 5], 1, numel(temp_stim_order));
     end
     
-    for trial = 1%:numel(temp_stim_order)% trial: per one video/music
+    for trial = 1:numel(temp_stim_order)% trial: per one video/music
         
         stim_num = temp_stim_order(trial); % stimulus number (e.g., joy001)
         
@@ -249,7 +249,7 @@ for block = 1%:n_block % block: per emotion category
             end
             
             Screen('DrawTexture', theWindow, tex);
-            Screen('Flip', theWindow)
+            Screen('Flip', theWindow);
             Screen('Close', tex);
         end
         
@@ -270,7 +270,7 @@ for block = 1%:n_block % block: per emotion category
     end
     
     % === filler ===
-    trial = trial+1;
+    trial = numel(temp_stim_order)+1;
     
     data.dat{block}{trial}.task = 'filler task';
     data.dat{block}{trial}.filler_start_time = GetSecs;
@@ -358,7 +358,7 @@ for block = 1%:n_block % block: per emotion category
     
     % fixation display (5 seconds)
     Screen('TextSize', theWindow, fontsize(3));
-    fixation_point = double('+') ;
+    fixation_point = double('+');
     DrawFormattedText(theWindow, fixation_point, 'center', 'center', text_color);
     Screen('Flip', theWindow);
     waitsec_fromstarttime(data.dat{block}{trial}.filler_start_time, 10);
