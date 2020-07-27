@@ -18,7 +18,7 @@ bgcolor = 50;
 screens = Screen('Screens');
 window_num = screens(end); 
 window_info = Screen('Resolution', window_num);
-% window_rect = [0 0 1200 800];
+% window_rect = [0 0 1920 1200]; %7T mac
 window_rect = [0 0 window_info.width window_info.height];
 W = window_rect(3); %width of screen
 H = window_rect(4); %height of screen
@@ -35,18 +35,18 @@ Screen('Preference', 'SkipSyncTests', 1);
 
 % Fixation 1sec
 Screen(theWindow, 'FillRect', bgcolor, window_rect);
-drawFixationCross(theWindow, window_rect, 15, white, 4)
-Screen('Flip', theWindow)
+drawFixationCross(theWindow, window_rect, 15, white, 4);
+Screen('Flip', theWindow);
 WaitSecs(1);
 
 % amusement video
 % video = [0074, 0080, 0574, 0578, 0910, 1043, 1697, 1801];
-video = [0074, 0080];
+video = [0074];
 
 for i = 1:size(video,2)
     
     % find movie file
-    target_file = strcat(num2str(video(i)),'_test.mp4');
+    target_file = strcat(num2str(video(i)),'.mp4');
     target_file_dir = fullfile(stim_dir, target_file);
     
     [moviePtr, dura] = Screen('OpenMovie', theWindow, target_file_dir);
@@ -63,7 +63,7 @@ for i = 1:size(video,2)
         end
         
         Screen('DrawTexture', theWindow, tex);
-        Screen('Flip', theWindow)
+        Screen('Flip', theWindow);
         Screen('Close', tex);
     end
 end
@@ -71,7 +71,7 @@ end
 
 % Close
 Screen(theWindow, 'FillRect', bgcolor, window_rect);
-drawFixationCross(theWindow, window_rect, 15, white, 4)
-Screen('Flip', theWindow)
+drawFixationCross(theWindow, window_rect, 15, white, 4);
+Screen('Flip', theWindow);
 WaitSecs(1);
 Screen('CloseAll');
