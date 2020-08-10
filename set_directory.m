@@ -19,8 +19,8 @@ switch where
         stim_dir = '/Users/hongji/Dropbox/Cocoan_lab/Collab/7T_HCP_emotion/sync_7T_emotion';
         
     case 'hb_mac'
-        basedir = '/Users/hyebinkim/Dropbox/Cocoan lab/7T HCP/stimuli_candidates/git_7T_hcp_emotion';
-        % stim_dir
+        basedir = '/Users/hyebinkim/Dropbox/Cocoanlab/7T_HCP/stimuli_candidates/git_7T_hcp_emotion';
+        stim_dir = '/Users/hyebinkim/Dropbox/Cocoanlab/7T_HCP/stimuli_candidates';
         
     case 'hb_window'
         basedir = 'C:\Users\nutri\Dropbox\Cocoan lab\7T HCP\stimuli_candidates\git_7T_hcp_emotion';
