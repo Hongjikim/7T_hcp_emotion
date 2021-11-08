@@ -15,7 +15,7 @@
 %    Copyright (C) 2020 COCOAN lab
 %    contact: Hongji Kim (redkim94@hanmail.net)
 %
-% TODO: save csv file, fixation circle size, button input, screen size
+% TODO: save csv file, instruction picture size, math location
 
 %% Directory and subject information
 
@@ -36,7 +36,7 @@ keys = [O X]; mathset.keys = keys;
 done = 0;
 scanPulse=0; % change
 
-global W H theWindow
+global W H w screenRect
 
 % [basedir, dat_dir, stim_dir, ts_dir] = set_directory('7T_mri'); % 'hj_mac'
 [basedir, dat_dir, stim_dir, ts_dir] = set_directory('hj_mac'); % 'hj_mac'
@@ -84,7 +84,6 @@ H = 900; %window_rect(4); %height of screen
 
 % check resolution
 % assert(W==2880&&H==1800, 'The monitor resolution is not 1920*1200');
-% assert(W==1600&&H==1000, 'The monitor resolution is not 1920*1200');
 
 % text location
 textH = H/2.3;
@@ -115,8 +114,14 @@ text_color = white;
 mathset.correct_color = white; mathset.wrong_color = white;
 
 Screen('Preference', 'SkipSyncTests', 1);
-% [theWindow, ~] = Screen('OpenWindow', window_num, bgcolor, window_rect);
-[theWindow, screenRect] = Screen('OpenWindow', window_num, bgcolor);
+% [w, ~] = Screen('OpenWindow', window_num, bgcolor, window_rect);
+[w, screenRect] = Screen('OpenWindow', window_num, bgcolor);
+
+Screen('Preference', 'TextRenderer', 0); 
+Screen('Preference', 'DefaultFontName');
+% Screen('TextFont',  w, 'NanumGothic');
+Screen('TextSize',  w,  80);
+
 
 % ============================
 % % show general instruction images
@@ -124,15 +129,15 @@ Screen('Preference', 'SkipSyncTests', 1);
 srcRect = [0, 0, 800, 600];
 dstRect = CenterRect(srcRect,screenRect);
 inst_img = imread('7T_General_inst_00.png');
-inst_tex = Screen('MakeTexture', theWindow, inst_img);
+inst_tex = Screen('MakeTexture', w, inst_img);
 inst_press1_img = imread('7T_General_inst_01.png');
-inst_press1_tex = Screen('MakeTexture', theWindow, inst_press1_img);
+inst_press1_tex = Screen('MakeTexture', w, inst_press1_img);
 inst_press2_img = imread('7T_General_inst_02.png');
-inst_press2_tex = Screen('MakeTexture', theWindow, inst_press2_img);
+inst_press2_tex = Screen('MakeTexture', w, inst_press2_img);
 
 cx = W/2; cy = H/2;
-Screen('DrawTexture', theWindow, inst_tex, srcRect, [cx-400 cy-300 cx+400 cy+300]);
-Screen('Flip', theWindow);
+Screen('DrawTexture', w, inst_tex, srcRect, [cx-400 cy-300 cx+400 cy+300]);
+Screen('Flip', w);
 
 % ============================
 % % wait for the participant's resp.
@@ -141,12 +146,12 @@ while 1
     [keyIsDown, initExpt, keyCode] = KbCheck(Participant);
     if keyIsDown
         if keyCode(Press_1)
-            Screen('DrawTexture', theWindow, inst_press1_tex, srcRect, [cx-400 cy-300 cx+400 cy+300]);
-            Screen('Flip', theWindow);
+            Screen('DrawTexture', w, inst_press1_tex, srcRect, [cx-400 cy-300 cx+400 cy+300]);
+            Screen('Flip', w);
             break;
         elseif keyCode(Press_2)
-            Screen('DrawTexture', theWindow, inst_press2_tex, srcRect, [cx-400 cy-300 cx+400 cy+300]);
-            Screen('Flip', theWindow);
+            Screen('DrawTexture', w, inst_press2_tex, srcRect, [cx-400 cy-300 cx+400 cy+300]);
+            Screen('Flip', w);
             break;
         end
     end
@@ -156,7 +161,8 @@ end
 % % wait for the experimenter's resp.
 % ============================
 while 1
-    [keyIsDown, initExpt, keyCode] = KbCheck(Experimenter);
+    [keyIsDown, initExpt, keyCode] = KbCheck(Participant);
+    %     [keyIsDown, initExpt, keyCode] = KbCheck(Experimenter);
     if keyIsDown
         if keyCode(SPACE)
             break;
@@ -213,8 +219,8 @@ math_anws = math_anws(randomizer);
 
 % time interval
 mathset.present_rate = 1;
-mathset.present_time = 5;
-mathset.task_time = 4;
+mathset.present_time = 4;
+mathset.task_time = 3;
 mathset.feedback_time = 1;
 mathset.trl_time = mathset.present_time + mathset.task_time + mathset.feedback_time;
 
@@ -238,43 +244,43 @@ mathset.trl_time = mathset.present_time + mathset.task_time + mathset.feedback_t
 Experimenter =[]; Scanner = []; Participant =[];
 % end
 
-
 %% sync with scanner
 % during dummy scan, show instruction
-% Screen('TextSize', theWindow, fontsize(3));
+% Screen('TextSize', w, fontsize(3));
 % instruction_msg = double('Please focus on the movie/music (s)');
 % instruction_msg = double('제시되는 동영상 혹은 음악에 집중해주세요. \n \n 수학 문제가 나타나면 버튼으로 답변을 해주세요.');
-% DrawFormattedText(theWindow, instruction_msg, 'center', 'center', text_color);
-% Screen('Flip', theWindow);
+% DrawFormattedText(w, instruction_msg, 'center', 'center', text_color);
+% Screen('Flip', w);
 
 % ============================
 % if SPACE is pressed, show the task inst. image
 % ============================
 
-inst_emotion_img = imread('emotion_instruction.png');
-inst_emotion_tex = Screen('MakeTexture', theWindow, inst_emotion_img);
+inst_img_emo = imread('emotion_instruction.png');
+inst_tex_emo = Screen('MakeTexture', w, inst_img_emo);
+Screen('DrawTexture', w, inst_tex_emo, srcRect, [cx-400 cy-300 cx+400 cy+300]);
+Screen('Flip', w);
+
+% inst_emotion_img = imread('emotion_instruction.png');
+% inst_emotion_tex = Screen('MakeTexture', w, inst_emotion_img);
 
 % Screen('Preference','TextEncodingLocale','ko_KR.UTF-8');
 
-data.runscan_starttime = GetSecs; % run start timestamp
-% Screen(theWindow, 'FillRect', bgcolor, window_rect);
-% Screen('Flip', theWindow);
+% Screen(w, 'FillRect', bgcolor, window_rect);
+% Screen('Flip', w);
 
-HideCursor;
-
-Screen('DrawTexture', theWindow, inst_emotion_tex, srcRect, [cx-400 cy-300 cx+400 cy+300]);
-Screen('Flip', theWindow);
+% HideCursor;
 
 % while 1
 %     [keyIsDown, initExpt, keyCode] = KbCheck(Participant);
 %     if keyIsDown
 %         if keyCode(Press_1)
-%             Screen('DrawTexture', theWindow, inst_emotion_tex, srcRect, [cx-400 cy-300 cx+400 cy+300]);
-%             Screen('Flip', theWindow);
+%             Screen('DrawTexture', w, inst_emotion_tex, srcRect, [cx-400 cy-300 cx+400 cy+300]);
+%             Screen('Flip', w);
 %             break;
 %         elseif keyCode(Press_2)
-%             Screen('DrawTexture', theWindow, inst_press2_tex, srcRect, [cx-400 cy-300 cx+400 cy+300]);
-%             Screen('Flip', theWindow);
+%             Screen('DrawTexture', w, inst_press2_tex, srcRect, [cx-400 cy-300 cx+400 cy+300]);
+%             Screen('Flip', w);
 %             break;
 %         end
 %     end
@@ -303,21 +309,25 @@ elseif start_input.listen == 3
     data.s_key_receive_time = GetSecs;
 end
 
-Screen('TextSize', theWindow, fontsize(3));
-fixation_point = double('+') ;
-% DrawFormattedText(theWindow, fixation_point, 'center', 'center', text_color);
-% Screen('DrawDots', theWindow, [W/2 H/2], 30, [0 0 0], [0 0], 1); %windowPtr [,color] [,rect] [,perfectUpToMaxDiameter]);
-% Screen('FillOval', theWindow, [0 0 0], [H/3 W/3 2*H/3 2*W/3]); %windowPtr [,color] [,rect] [,perfectUpToMaxDiameter]);
+Screen('TextSize', w, fontsize(3));
+% fixation_point = double('+') ;
+% DrawFormattedText(w, fixation_point, 'center', 'center', text_color);
+% Screen('DrawDots', w, [W/2 H/2], 30, [0 0 0], [0 0], 1); %windowPtr [,color] [,rect] [,perfectUpToMaxDiameter]);
+% Screen('FillOval', w, [0 0 0], [H/3 W/3 2*H/3 2*W/3]); %windowPtr [,color] [,rect] [,perfectUpToMaxDiameter]);
 draw_dot;
 
 %% TASK START
-waitsec_fromstarttime(data.s_key_receive_time, 10); % baseline (10 seconds)
 
-data.loop_start_time{start_input.run_num} = GetSecs;
+data.runscan_starttime = GetSecs; % run start timestamp
+
+trial_dur = 4.8; % 4.8 seconds
+waitsec_fromstarttime(data.s_key_receive_time, 8); % baseline (8 seconds)
 
 data.trial_sequence.emo_order = ts.emo_order{start_input.run_num};
 data.trial_sequence.stim_order = ts.stim_order{start_input.run_num};
 data.trial_sequence.math_order = math_stim{1:n_block};
+
+data.loop_start_time{start_input.run_num} = GetSecs;
 
 for block = 1:n_block % block: per emotion category
     
@@ -329,10 +339,14 @@ for block = 1:n_block % block: per emotion category
         temp_stim_order = ts.stim_order{1,start_input.run_num}.music(emotion_num-13,:);
     end
     
+    % fixation duration (with jitter)
     fix_duration = [];
-    while mean(fix_duration) ~= 4
-        fix_duration = randi([3 5], 1, numel(temp_stim_order));
+    fix_rand = [];
+    while mean(fix_rand) ~= 4
+        fix_rand = randi([3 5], 1, numel(temp_stim_order));
     end
+    %     fix_duration = (fix_rand/2)*trial_dur;
+    fix_duration = (trial_dur/4)*fix_rand;
     
     for trial = 1:numel(temp_stim_order)% trial: per one video/music
         
@@ -346,39 +360,39 @@ for block = 1:n_block % block: per emotion category
         data.dat{block}{trial}.target_stim_number = stim_num;
         data.dat{block}{trial}.target_filename = target_file;
         
-        % stim display (5 seconds)
+        % stim display (4.8 seconds)
         
         playmode = 1;
-        [moviePtr, dura] = Screen('OpenMovie', theWindow, target_file);
+        [moviePtr, dura] = Screen('OpenMovie', w, target_file);
         Screen('SetMovieTimeIndex', moviePtr,0);
         %         moviePtr = Screen('CreateMovie', windowPtr, movieFile [, width][, height]);
         
         Screen('PlayMovie', moviePtr, playmode); % 0 == Stop playback, 1 == Normal speed forward, -1 == Normal speed backward,
         data.dat{block}{trial}.stim_start_time = GetSecs;
         
-        while GetSecs - data.dat{block}{trial}.stim_start_time < 5 %(~done) %~KbCheck
+        while GetSecs - data.dat{block}{trial}.stim_start_time < trial_dur %(~done) %~KbCheck
             % Wait for next movie frame, retrieve texture handle to it
-            tex = Screen('GetMovieImage', theWindow, moviePtr);
+            tex = Screen('GetMovieImage', w, moviePtr);
             
             if tex<=0
-                waitsec_fromstarttime(data.dat{block}{trial}.stim_start_time,5);
+                waitsec_fromstarttime(data.dat{block}{trial}.stim_start_time,trial_dur);
                 break;
             end
             
-            Screen('DrawTexture', theWindow, tex);
-            Screen('Flip', theWindow);
+            Screen('DrawTexture', w, tex);
+            Screen('Flip', w);
             Screen('Close', tex);
         end
         
         data.dat{block}{trial}.stim_end_time = GetSecs;
         
-        % fixation display (3/4/5 seconds)
+        % fixation display (jittered time)
         data.dat{block}{trial}.fix_start_time = GetSecs;
         
-        Screen('TextSize', theWindow, fontsize(3));
+        Screen('TextSize', w, fontsize(3));
         %         fixation_point = double('+') ;
-        %         DrawFormattedText(theWindow, fixation_point, 'center', 'center', text_color);
-        %         Screen('Flip', theWindow);
+        %         DrawFormattedText(w, fixation_point, 'center', 'center', text_color);
+        %         Screen('Flip', w);
         draw_dot;
         waitsec_fromstarttime(data.dat{block}{trial}.fix_start_time, fix_duration(trial));
         
@@ -410,50 +424,50 @@ for block = 1:n_block % block: per emotion category
     cnum={}; cnum{1}=n1; cnum{2}=s1; cnum{3}=n2; cnum{4}=s2; cnum{5}=n3;
     
     % calculation presentation (0s)
-    Screen('TextSize', theWindow, fontsize(4));
+    Screen('TextSize', w, fontsize(4));
     for n = 1:length(stim_loc)
         stim_time = GetSecs; ii = 1;
         while ii <= n
-            DrawFormattedText(theWindow, cnum{ii}, stim_loc{ii}(3), stim_loc{ii}(4), white);
+            DrawFormattedText(w, cnum{ii}, stim_loc{ii}(3), stim_loc{ii}(4), white);
             ii = ii + 1;
         end
-        Screen(theWindow,'Flip');
+        Screen(w,'Flip');
         %         while GetSecs - stim_time < 0.1; end
     end
     
     ii = 1;
     while ii <= length(stim_loc)
         if ii == length(stim_loc)
-            DrawFormattedText(theWindow, cnum{ii}, stim_loc{ii}(3), stim_loc{ii}(4), white);
+            DrawFormattedText(w, cnum{ii}, stim_loc{ii}(3), stim_loc{ii}(4), white);
         else
-            DrawFormattedText(theWindow, cnum{ii}, stim_loc{ii}(3), stim_loc{ii}(4), white);
+            DrawFormattedText(w, cnum{ii}, stim_loc{ii}(3), stim_loc{ii}(4), white);
         end
         ii = ii + 1;
     end
     
     % 'Correct?' (1s)
-    %     DrawFormattedText(theWindow, ['Is ' cnum{end} ' correct?'], stim_mpoint(3), stim_mpoint(4), black);
-    DrawFormattedText(theWindow, 'O', ans_loc{1}(3), ans_loc{1}(4), white);
-    DrawFormattedText(theWindow, 'X', ans_loc{2}(3), ans_loc{2}(4), white);
-    Screen(theWindow,'Flip');
+    %     DrawFormattedText(w, ['Is ' cnum{end} ' correct?'], stim_mpoint(3), stim_mpoint(4), black);
+    DrawFormattedText(w, 'O', ans_loc{1}(3), ans_loc{1}(4), white);
+    DrawFormattedText(w, 'X', ans_loc{2}(3), ans_loc{2}(4), white);
+    Screen(w,'Flip');
     
     % rt start (1~5s)
     rt_start = GetSecs;
     selection = [];
     
-    while GetSecs - rt_start < 4.5
+    while GetSecs - rt_start < trial_dur
         [keyisdown,~,keycode,~] = KbCheck(Participant);
         if keyisdown
             if keycode(O)
                 rt_end = GetSecs;
                 selection = O;
                 if math_anws(block); answer = 1; else answer = 0; end
-                feedback_screen(theWindow,answer,selection,cnum,mathset); Screen(theWindow,'Flip');
+                feedback_screen(w,answer,selection,cnum,mathset); Screen(w,'Flip');
             elseif keycode(X)
                 rt_end = GetSecs;
                 selection = X;
                 if math_anws(block); answer = 0; else answer = 1; end
-                feedback_screen(theWindow,answer,selection,cnum,mathset); Screen(theWindow,'Flip');
+                feedback_screen(w,answer,selection,cnum,mathset); Screen(w,'Flip');
             end
         end
         clear keyisdown keycode;
@@ -461,8 +475,8 @@ for block = 1:n_block % block: per emotion category
     
     if isempty(selection)
         rt_end = NaN; answer = 0;
-        feedback_screen(theWindow,answer,selection,cnum,mathset);
-        Screen(theWindow,'Flip');
+        feedback_screen(w,answer,selection,cnum,mathset);
+        Screen(w,'Flip');
     end
     
     disp(['=== RT is ' num2str(rt_end - rt_start) 's, response is ' num2str(answer)]);
@@ -477,31 +491,32 @@ for block = 1:n_block % block: per emotion category
     data.dat{block}{trial}.filler_end_time = GetSecs;
     disp(['=== filler time: ' num2str(data.dat{block}{trial}.filler_end_time - data.dat{block}{trial}.filler_start_time) 's']);
     
-    waitsec_fromstarttime(data.dat{block}{trial}.filler_start_time, 5);
+    waitsec_fromstarttime(data.dat{block}{trial}.filler_start_time, trial_dur);
     
     % fixation display (5 seconds)
-    Screen('TextSize', theWindow, fontsize(3));
+    Screen('TextSize', w, fontsize(3));
     %     fixation_point = double('+') ;
-    %     DrawFormattedText(theWindow, fixation_point, 'center', 'center', text_color);
-    %     Screen('Flip', theWindow);
+    %     DrawFormattedText(w, fixation_point, 'center', 'center', text_color);
+    %     Screen('Flip', w);
     draw_dot;
-    waitsec_fromstarttime(data.dat{block}{trial}.filler_start_time, 10);
+    waitsec_fromstarttime(data.dat{block}{trial}.filler_start_time, trial_dur*2);
     data.dat{block}{trial}.block_end_time = GetSecs;
 end
 
 data.runscan_end_time = GetSecs;
 
-Screen('TextSize', theWindow, fontsize(3));
-DrawFormattedText(theWindow, double('This run is done. Please wait.'), 'center', 'center', text_color);
-Screen('Flip', theWindow);
+draw_dot;
+
+% Screen('TextSize', w, fontsize(3));
+% DrawFormattedText(w, double('This run is done. Please wait.'), 'center', 'center', text_color);
+% Screen('Flip', w);
 
 % save data
 nowtime = clock;
 savename = fullfile(dat_dir, ['taskdata_sub' start_input.subj_id '_run' num2str(start_input.run_num, '%.2d') '_' date '_' num2str(nowtime(4)) '_' num2str(nowtime(5)) '.mat']);
 save(savename, 'data');
 
-draw_dot;
-WaitSecs(16);
+WaitSecs(8);
 
 Screen('CloseAll');
 
@@ -523,7 +538,17 @@ end
 end
 
 function draw_dot
-global theWindow W H
-Screen('DrawDots', theWindow, [W/2 H/2], 30, [0 0 0], [0 0], 1); %windowPtr [,color] [,rect] [,perfectUpToMaxDiameter]);
-Screen('Flip', theWindow);
+
+global w W H screenRect
+% Screen('DrawDots', w, [W/2 H/2], 30, [0 0 0], [0 0], 1); %windowPtr [,color] [,rect] [,perfectUpToMaxDiameter]);
+% Screen('Flip', w);
+
+dotSize = 6; %radius [px]
+fixationDot = [-dotSize -dotSize dotSize dotSize];
+fixationDot = CenterRect(fixationDot, screenRect);
+fixColor = [0, 0, 0];
+
+Screen('FillOVal', w, fixColor, fixationDot);
+Screen('Flip', w);
+
 end
